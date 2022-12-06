@@ -6,9 +6,21 @@ const { fifaData } = require('./fifa.js')
 	
 	💡 İPUCU: Öncelikle datayı filtrelemek isteyebilirsiniz */
 
+const dunyaKupasiFinali2014 = fifaData.filter(finaliAl);
+
+function finaliAl(mac){
+	return mac['Year'] === 2014 && mac['Stage'] === 'Final';
+};
+
+console.log(dunyaKupasiFinali2014);
+
 //(a) 2014 Dünya kupası Finali Evsahibi takım ismi (dizide "Home Team Name" anahtarı)
 
+let evSahibi = dunyaKupasiFinali2014[0]['Home Team Name'];
+console.log(evSahibi);
+
 //(b) 2014 Dünya kupası Finali Deplasman takım ismi  (dizide "Away Team Name" anahtarı)
+
 
 //(c) 2014 Dünya kupası finali Ev sahibi takım golleri (dizide "Home Team Goals" anahtarı)
 
@@ -25,12 +37,26 @@ const { fifaData } = require('./fifa.js')
 	💡 İPUCU - verilen data içindeki nesnelerin(objects) "Stage" anahtarına bakmalısınız
 */
 
-function Finaller(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
+/*
+function Finaller(fifaVerileri) {
+	let finallerDizisi = [];
+
+	for (let i=0; i < fifaVerileri.length; i ++){
+		if (fifaVerileri[i].Stage === 'Final'){
+			finallerDizisi.push(fifaVerileri[i]);
+		}
+	}
+	return finallerDizisi;
+};
+console.log(Finaller(fifaData)); */
+
+// yigit not: yukarıdaki for ve if kullanan yöntem. aşağıdaki ise filter kullanan yöntem. 
+
+function Finaller(fifaVerileri){
+	let finallerDizisi = fifaVerileri.filter((mac) => {return mac.Stage === 'Final'});
+	return finallerDizisi;
 }
-
-
+console.log(Finaller(fifaData));
 
 /*  Görev 3: 
 	Bir higher-order fonksiyonu olan Yillar isimli fonksiyona aşağıdakileri uygulayın: 
@@ -39,10 +65,11 @@ function Finaller(/* kodlar buraya */) {
 	3. Finaller data setindeki tüm yılları içeren "years" adındaki diziyi(array) döndürecek
 	*/
 
-function Yillar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
-}
+function Yillar(fifaVerileri, callback) {
+	let years = callback(fifaVerileri).map ((mac) => {return mac.Year;});
+	return years;
+};
+console.log(Yillar(fifaData, Finaller));
 
 
 /*  Görev 4: 
@@ -53,13 +80,23 @@ function Yillar(/* kodlar buraya */) {
 	💡 İPUCU: Beraberlikler(ties) için şimdilik endişelenmeyin (Detaylı bilgi için README dosyasına bakabilirsiniz.)
 	4. Tüm kazanan ülkelerin isimlerini içeren `kazananlar` adında bir dizi(array) döndürecek(return)  */ 
 
-function Kazananlar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
-	
-}
+	// yigit not: bu soruyu filter ile denedim fakat kazanan takımı belirleyemedim.
 
 
+function Kazananlar(fifaVerileri, callback) {
+	
+    let kazananTakimlar = [];
+	let finaller = callback(fifaVerileri);
+	for (let i = 0; i < finaller.length; i ++){
+		if (finaller[i]['Home Team Goals'] > finaller[i]['Away Team Goals']){
+			kazananTakimlar.push(finaller[i]['Home Team Name']);
+		}	else {
+			kazananTakimlar.push(finaller[i]['Away Team Name']);
+		}
+	}
+	return kazananTakimlar;
+};
+console.log(Kazananlar(fifaData, Finaller));
 
 /*  Görev 5: 
 	Bir higher-order fonksiyonu olan YillaraGoreKazananlar isimli fonksiyona aşağıdakileri uygulayın:
@@ -72,11 +109,17 @@ function Kazananlar(/* kodlar buraya */) {
 	💡 İPUCU: her cümlenin adım 4'te belirtilen cümleyle birebir aynı olması gerekmektedir.
 */
 
-function YillaraGoreKazananlar(/* kodlar buraya */) {
-	
-/* kodlar buraya */
+function YillaraGoreKazananlar(fifaVerileri, finallerCallback, yillarCallback, kazananlarCallback) {
 
-}
+
+let kazananlarListesi = finallerCallback(fifaVerileri).map((mac, i)=>{
+	return yillarCallback(fifaVerileri, finallerCallback)[i] + " yılında, " + kazananlarCallback(fifaVerileri, finallerCallback)[i] + " dünya kupasını kazandı!";
+})
+return kazananlarListesi;
+
+};
+
+console.log(YillaraGoreKazananlar(fifaData, Finaller, Yillar, Kazananlar));
 
 
 /*  Görev 6: 
@@ -93,11 +136,17 @@ function YillaraGoreKazananlar(/* kodlar buraya */) {
 	
 */
 
-function OrtalamaGolSayisi(/* kodlar buraya */) {
+function OrtalamaGolSayisi(finaller) {
 	
-    /* kodlar buraya */
+    const totalGoals = finaller.reduce(
+		(total, match) => 
+		total + match['Home Team Goals'] + match['Away Team Goals'],
+	0
+	);
+
+	return (totalGoals / finaller.length).toFixed(2);
 	
-}
+};
 
 
 
