@@ -280,8 +280,7 @@ console.log(EnKotuDefans(fifaData));
 console.log("aaaa");
 /* Hala vaktiniz varsa, README dosyasında listelenen hedeflerden istediğinizi aşağıdaki boşluğa yazabilirsiniz. */
 
-// dünya kupasına katılan takımların kaç defa katıldığını gösteren fonksiyon
-// ilk parametre olarak fifaData, ikinci parametre olarak ise initials alır
+// Ülke kısaltmalarını parametre olarak alan ve dünya kupasında yer alma sayılarını dönünen bir fonksiyon yaratabilirsiniz.
 
 console.log("bonus 4");
 
@@ -305,6 +304,30 @@ function kacDefaKatildi(data, teamInitial) {
 }
 
 console.log(kacDefaKatildi(fifaData, "ITA"));
+
+console.log("bonus 5");
+
+// Ülke kısaltmalarını parametre olarak alan ve dünya kupasında attıkları gol sayılarını(1930 sonrası) dönen bir fonksiyon yaratabilirsiniz.
+
+function kacGolAtti(data, initial) {
+  let takimlar = {};
+  let result = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    takimlar[data[i]["Home Team Initials"]] = 0;
+    takimlar[data[i]["Away Team Initials"]] = 0;
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    takimlar[data[i]["Home Team Initials"]] += data[i]["Home Team Goals"];
+    takimlar[data[i]["Away Team Initials"]] += data[i]["Away Team Goals"];
+  }
+
+  result = takimlar[initial];
+  return result;
+}
+
+console.log(kacGolAtti(fifaData, "TUR"));
 
 /* Bu satırın aşağısındaki kodları lütfen değiştirmeyin */
 function sa() {
